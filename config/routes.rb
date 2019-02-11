@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :movies
       resources :moods
+      resources :moovie_moods
 
     end
   end

@@ -18,3 +18,7 @@ end
  moodNames.each do |moodName|
    Mood.create( name: moodName )
  end
+
+ 100.times do
+   MovieMood.create(movie_id: Movie.all.sample.id, mood_id: Mood.all.sample.id)
+ end
