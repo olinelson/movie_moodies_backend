@@ -5,6 +5,8 @@ Rails.application.routes.draw do
       resources :movies
       resources :moods
       resources :movie_moods
+      resources :genres
+      resources :movie_genres
 
     end
   end
