@@ -22,15 +22,10 @@ movies.each do |movie|
   Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'])
 end
 
-
-#
-# 50.times do
-#   Movie.create(title: Faker::Book.title, length: rand(20..240), release: Faker::Date.birthday(1, 50), image:"https://3.bp.blogspot.com/-NR5TQG15EQU/UrCYGi7FYDI/AAAAAAAAARQ/bUh7usV1HFY/s1600/casablanca-poster-artwork-humphrey-bogart-ingrid-bergman-paul-henreid.jpg", description: "Quo sunt voluptatem mollitia libero vel aut est. Ut ea quis aliquam eum voluptatem odio sed eaque. Quidem laboriosam iste laboriosam voluptatibus. Aperiam est commodi tempore totam. Nihil quaerat dolores eius aliquid libero delectus beatae eos.")
-# end
  moods = [
    {
      name: "happy",
-     icon: "far fa-smile"
+     icon: "fas fa-smile"
    },
    {
      name: "sad",
@@ -38,7 +33,7 @@ end
    },
    {
      name: "scary",
-     icon: "far fa-surprise"
+     icon: "fas fa-surprise"
    },
    {
      name: "funny",
@@ -46,7 +41,7 @@ end
    },
    {
      name: "angry",
-     icon: "far fa-angry"
+     icon: "fas fa-angry"
    },
    {
      name: "bored",
