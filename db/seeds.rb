@@ -21,7 +21,7 @@ imageUrl= "https://image.tmdb.org/t/p/w500"
 movies.each do |movie|
   Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'])
 end
-
+# 
  moods = [
    {
      name: "happy",
