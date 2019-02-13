@@ -13,15 +13,36 @@ mostPopularMovies3 = ::RestClient::Request.execute(method: :get, url: "https://a
 hash3 = JSON.parse(mostPopularMovies3)
 combinedCalls.push(hash3["results"])
 
-movies = combinedCalls.flatten
+# genre request ###############################
 
+genres = ::RestClient::Request.execute(method: :get, url: "https://api.themoviedb.org/3/genre/movie/list?api_key=d2001c75a6bc64e98cc457d9b2a86444&language=en-US", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'})
+parsedGenres = JSON.parse(genres)
+
+parsedGenres['genres'].each do |g|
+  Genre.create( apiId: g["id"], name: g["name"])
+end
+
+# ###############################################
+
+movies = combinedCalls.flatten
 
 imageUrl= "https://image.tmdb.org/t/p/w500"
 
-movies.each do |movie|
-  Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'])
+def findGenreByApiId(query)
+  Genre.all.select do |g|
+    g.apiId == query
+  end
 end
-# 
+
+movies.each do |movie|
+newMovie = Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'])
+
+movie["genre_ids"].each do |gId|
+  MovieGenre.create(movie_id: newMovie.id, genre_id: findGenreByApiId(gId).first.id)
+end
+
+end
+#
  moods = [
    {
      name: "happy",
@@ -52,7 +73,7 @@ end
      icon: "fas fa-grin-hearts"
    },
    {
-     name: "bemused",
+     name: "hungry",
      icon: "fas fa-grin-tongue-wink"
    },
    {
@@ -66,5 +87,43 @@ end
  end
 
 Movie.all.each do |movie|
-  MovieMood.create(movie_id: movie.id, mood_id: Mood.all.sample.id)
+  movie.genres.each do |g|
+    if g.name == "Comedy" || g.name == "Animation" || g.name == "Fantasy"
+      MovieMood.create(movie_id: movie.id, mood_id: 1)
+    end
+
+    if g.name == "Crime" || g.name == "Horror" || g.name == "Thriller" || g.name == "War" || g.name == "Documentary"
+      MovieMood.create(movie_id: movie.id, mood_id: 2)
+    end
+
+    if g.name == "Horror" || g.name == "War" || g.name == "Thriller"
+      MovieMood.create(movie_id: movie.id, mood_id: 3)
+    end
+
+    if g.name == "Comedy" || g.name == "Romance" || g.name == "Family"
+      MovieMood.create(movie_id: movie.id, mood_id: 4)
+    end
+
+    if g.name == "War" || g.name == "Documentary" || g.name == "Action" || g.name == "Western"
+      MovieMood.create(movie_id: movie.id, mood_id: 5)
+    end
+
+    if g.name == "Adventure" || g.name == "Documentary" || g.name == "Mystery" || g.name == "Science Fiction"
+      MovieMood.create(movie_id: movie.id, mood_id: 6)
+    end
+
+    if g.name == "Romance" || g.name == "Family" || g.name == "Fantasy" || g.name == "Drama"
+      MovieMood.create(movie_id: movie.id, mood_id: 7)
+    end
+
+    if g.name == "Adventure" || g.name == "Documentary" || g.name == "Family"
+      MovieMood.create(movie_id: movie.id, mood_id: 8)
+    end
+
+    if g.name == "Animation" || g.name == "Comedy" || g.name == "Drama" || g.name == "TV Movie"
+      MovieMood.create(movie_id: movie.id, mood_id: 9)
+    end
+
+end
+  # MovieMood.create(movie_id: movie.id, mood_id: Mood.all.sample.id)
 end
