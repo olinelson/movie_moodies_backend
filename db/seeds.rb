@@ -1,5 +1,5 @@
 combinedCalls = []
-
+# 
 mostPopularMovies1 = ::RestClient::Request.execute(method: :get, url: "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=d2001c75a6bc64e98cc457d9b2a86444&page=1", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'})
 hash1 = JSON.parse(mostPopularMovies1)
 combinedCalls.push(hash1["results"])
