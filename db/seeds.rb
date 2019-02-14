@@ -1,5 +1,15 @@
+Movie.destroy_all
+Genre.destroy_all
+Mood.destroy_all
+MovieMood.destroy_all
+MovieGenre.destroy_all
+
+def apiKey
+  "d2001c75a6bc64e98cc457d9b2a86444"
+end
+
 combinedCalls = []
-# 
+#
 mostPopularMovies1 = ::RestClient::Request.execute(method: :get, url: "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=d2001c75a6bc64e98cc457d9b2a86444&page=1", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'})
 hash1 = JSON.parse(mostPopularMovies1)
 combinedCalls.push(hash1["results"])
@@ -45,14 +55,14 @@ end
 
 
 movies.each do |movie|
-newMovie = Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'])
+newMovie = Movie.create(title: movie["title"], length: 120, release: movie["release_date"], image: "#{imageUrl}#{movie['poster_path']}", description: movie['overview'], apiId: movie['id'])
 
 movie["genre_ids"].each do |gId|
   MovieGenre.create(movie_id: newMovie.id, genre_id: findGenreByApiId(gId).first.id)
 end
 
 end
-#
+
  moods = [
    {
      name: "happy",
@@ -96,47 +106,6 @@ end
    Mood.create( name: mood[:name], image: mood[:icon] )
  end
 
-# Movie.all.each do |movie|
-#   movie.genres.each do |g|
-#     if g.name == "Comedy" || g.name == "Animation" || g.name == "Fantasy"
-#       MovieMood.create(movie_id: movie.id, mood_id: 1)
-#     end
-#
-#     if g.name == "Crime" || g.name == "Horror" || g.name == "Thriller" || g.name == "War" || g.name == "Documentary"
-#       MovieMood.create(movie_id: movie.id, mood_id: 2)
-#     end
-#
-#     if g.name == "Horror" || g.name == "War" || g.name == "Thriller"
-#       MovieMood.create(movie_id: movie.id, mood_id: 3)
-#     end
-#
-#     if g.name == "Comedy" || g.name == "Romance" || g.name == "Family"
-#       MovieMood.create(movie_id: movie.id, mood_id: 4)
-#     end
-#
-#     if g.name == "War" || g.name == "Documentary" || g.name == "Action" || g.name == "Western"
-#       MovieMood.create(movie_id: movie.id, mood_id: 5)
-#     end
-#
-#     if g.name == "Adventure" || g.name == "Documentary" || g.name == "Mystery" || g.name == "Science Fiction"
-#       MovieMood.create(movie_id: movie.id, mood_id: 6)
-#     end
-#
-#     if g.name == "Romance" || g.name == "Family" || g.name == "Fantasy" || g.name == "Drama"
-#       MovieMood.create(movie_id: movie.id, mood_id: 7)
-#     end
-#
-#     if g.name == "Adventure" || g.name == "Documentary" || g.name == "Family"
-#       MovieMood.create(movie_id: movie.id, mood_id: 8)
-#     end
-#
-#     if g.name == "Animation" || g.name == "Comedy" || g.name == "Drama" || g.name == "TV Movie"
-#       MovieMood.create(movie_id: movie.id, mood_id: 9)
-#     end
-#
-# end
-#
-# end
 
 def findMoodByName(moodName)
   Mood.all.select do |m|
@@ -219,3 +188,18 @@ assignMoodByGenre('bored', boredGenres)
 assignMoodByGenre('romantic', romanticGenres)
 assignMoodByGenre('hungry', hungryGenres)
 assignMoodByGenre('snarky', snarkyGenres)
+
+
+
+
+  Movie.all[0..1].each do |movie|
+    response = ::RestClient::Request.execute(method: :get, url: "https://api.themoviedb.org/3/movie/#{movie.apiId}/videos?api_key=d2001c75a6bc64e98cc457d9b2a86444&language=en-US", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'})
+    hash1 = JSON.parse(response)['results']
+    hash1.each do |item|
+      Video.create(name: item["name"], domain: item["site"], url_key: item["key"], movie_id: movie.id)
+    end
+  end
+
+
+
+  # should create a new model with serializer that has all the movie keys
