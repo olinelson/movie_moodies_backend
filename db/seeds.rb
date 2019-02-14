@@ -3,6 +3,7 @@ Genre.destroy_all
 Mood.destroy_all
 MovieMood.destroy_all
 MovieGenre.destroy_all
+Video.destroy_all
 
 def apiKey
   "d2001c75a6bc64e98cc457d9b2a86444"
@@ -192,7 +193,7 @@ assignMoodByGenre('snarky', snarkyGenres)
 
 
 
-  Movie.all[0..1].each do |movie|
+  Movie.all[81..100].each do |movie|
     response = ::RestClient::Request.execute(method: :get, url: "https://api.themoviedb.org/3/movie/#{movie.apiId}/videos?api_key=d2001c75a6bc64e98cc457d9b2a86444&language=en-US", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'})
     hash1 = JSON.parse(response)['results']
     hash1.each do |item|
